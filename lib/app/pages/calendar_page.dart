@@ -3,7 +3,9 @@ import 'package:chuva_dart/app/pages/store/event_store.dart';
 import 'package:chuva_dart/app/data/repositories/event_repository.dart';
 import 'package:chuva_dart/app/pages/widgets/my_app_bar.dart';
 import 'package:chuva_dart/app/pages/widgets/my_botton_date.dart';
+import 'package:chuva_dart/app/pages/widgets/my_card.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class Calendar extends StatefulWidget {
   const Calendar({super.key});
@@ -17,7 +19,7 @@ class _CalendarState extends State<Calendar> {
   bool _clicked = false;
 
   String text = '''
-    Mesa redonda de 07:00 até 08:00
+    Mesa redonda de 07:00 até  8:00
     A Física dos Buracos Negros Supermassivos
     Stephen William Hawking
 ''';
@@ -39,24 +41,26 @@ class _CalendarState extends State<Calendar> {
 
   @override
   Widget build(BuildContext context) {
-    MyAppBar myAppBar = MyAppBar(context: context);
+  final MyAppBar myAppBar = MyAppBar(context: context);
 
+    // MyAppBar myAppBar = MyAppBar(context: context);
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 237, 236, 236),
+      // Color.fromARGB(255, 237, 236, 236)
+      backgroundColor: Colors.white,
       appBar: myAppBar.get(),
       body: Stack(
         children: [
           Column(
-            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Container(
-                color: Colors.lightBlue,
-                margin: const EdgeInsets.symmetric(vertical: 2.0),
+                color: Colors.blue,
+                margin: const EdgeInsets.only(top: 1.0, bottom: 10.0),
                 child: Row(
                   children: [
                     Container(
                       color: Colors.white,
-                      width: 50.0,
+                      width: 49.0,
+                      height: 54.0,
                       child: const Text(
                         ' Nov 2023',
                         style: TextStyle(
@@ -73,63 +77,78 @@ class _CalendarState extends State<Calendar> {
                     const MyBottonDate(number: '30'),
                   ],
                 ),
-                // margin: const EdgeInsets.only(left: 10.0, top: 15.0, bottom: 5.0, right: 10.0),
               ),
-              Container(
-                padding: const EdgeInsets.only(left: 5.0),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(5.0),
-                    color: Colors.lightBlue),
-                margin: const EdgeInsets.only(
-                    left: 10.0, top: 15.0, bottom: 5.0, right: 10.0),
-                child: Expanded(
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 10.0),
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.only(
-                        topRight: Radius.circular(5.0),
-                        bottomRight: Radius.circular(5.0),
+              Expanded(
+                child: ListView(
+                  children: [
+                    const MyCard(),
+                    Container(
+                      margin: const EdgeInsets.symmetric(
+                          vertical: 5.0, horizontal: 10.0),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5.0)),
+                      child: ElevatedButton(
+                        onPressed: () => context.push('/activity'),
+                        style: ElevatedButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(0),
+                            ),
+                            padding: const EdgeInsets.all(0)),
+                        child: Container(
+                          padding: const EdgeInsets.only(left: 5.0),
+                          decoration: BoxDecoration(
+                              color: Colors.lightBlue,
+                              borderRadius: BorderRadius.circular(5.0),
+                              boxShadow: const [
+                                BoxShadow(
+                                    color: Colors.grey,
+                                    offset: Offset(0, 2),
+                                    blurRadius: 4.0,
+                                    spreadRadius: 0)
+                              ]),
+                          child: Container(
+                            padding: const EdgeInsets.only(
+                                left: 20.0, top: 10.0, bottom: 10.0, right: 15.0),
+                            decoration: const BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.only(
+                                topRight: Radius.circular(5.0),
+                                bottomRight: Radius.circular(5.0),
+                              ),
+                            ),
+                            child: const Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Palestra de 07:00 até 08:00',
+                                  style: TextStyle(
+                                      color: Colors.black, fontSize: 12.0),
+                                ),
+                                Text(
+                                  'Biossinais em Mundos Oceânicos: Europa e Encélado',
+                                  style: TextStyle(
+                                      fontSize: 15.0,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.black),
+                                ),
+                                Text(
+                                  'Neil deGrasse Tyson, Stephen William Hawking',
+                                  style: TextStyle(
+                                      fontSize: 15.0,
+                                      color:
+                                          Color.fromARGB(255, 156, 156, 156)),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
                       ),
                     ),
-                    child: const Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('Mesa redonda de 07:00 até 08:00'),
-                        Text(
-                          'A Física dos Buracos Negros Supermassivos',
-                          style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.w500),
-                          maxLines: 2,
-                        ),
-                        Text(
-                          'Stephen William Hawkings',
-                          style: TextStyle(fontSize: 15.0, color: Color.fromARGB(255, 156, 156, 156)),
-                        ),
-                      ],
-                    ),
-                  ),
+                  ],
                 ),
               ),
-              // Container(
-              //   width: 350,
-              //   decoration: const BoxDecoration(color: Colors.amber),
-              //   child: const Column(
-              //     crossAxisAlignment: CrossAxisAlignment.start,
-              //     children: [
-              //       Text('Mesa redonda de 07:00 até 08:00'),
-              //       Text(
-              //         'A Física dos Buracos Negros Supermassivos',
-              //         style: TextStyle(fontSize: 18.0),
-              //       ),
-              //       Text(
-              //         'Stephen William Hawkings',
-              //         style: TextStyle(fontSize: 15.0),
-              //       ),
-              //     ],
-              //   ),
-              // ),
             ],
-          )
+          ),
         ],
       ),
     );

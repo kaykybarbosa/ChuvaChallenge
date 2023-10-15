@@ -1,17 +1,21 @@
-import 'package:chuva_dart/app/chuva_dart.dart';
+import 'package:chuva_dart/app/pages/activity_page.dart';
 import 'package:chuva_dart/app/pages/calendar_page.dart';
+import 'package:chuva_dart/app/pages/profile_page.dart';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 final routes = GoRouter(
   initialLocation: "/calendar",
   routes: [
     GoRoute(
-      path: "/",
-      builder: (context, state) => const ChuvaDart(),
+      path: "/calendar",
+      pageBuilder: (context, state) => const MaterialPage(child: Calendar(), fullscreenDialog: true),
     ),
     GoRoute(
-      path: "/calendar",
-      builder: (context, state) => const Calendar(),
+      path: "/activity",
+      pageBuilder: (context, state) => const MaterialPage(child: Activity(), fullscreenDialog: true),
     ),
+    // GoRoute(path: "/profile",
+    // pageBuilder: (context, state) => const MaterialPage(child: ProfilePage()),)
   ]
 );
