@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class MyCard extends StatelessWidget {
-  const MyCard({super.key});
+  MyCard({super.key});
+
+  bool isFavorted = false;
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +29,7 @@ class MyCard extends StatelessWidget {
                     spreadRadius: 0)
               ]),
           child: Container(
-            padding: const EdgeInsets.only(left: 25.0, top: 10.0, bottom: 10.0),
+            padding: const EdgeInsets.only(left: 24.0, bottom: 10.0),
             decoration: const BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.only(
@@ -35,23 +37,38 @@ class MyCard extends StatelessWidget {
                 bottomRight: Radius.circular(5.0),
               ),
             ),
-            child: const Column(
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'Mesa redonda de 07:00 até 08:00',
-                  style: TextStyle(fontSize: 13.0),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    const Text(
+                      'Apresentação de Pôster de 07:00 até 08:00',
+                      style: TextStyle(fontSize: 13.0, color: Colors.black),
+                    ),
+                    isFavorted
+                    ? const Icon(
+                      Icons.turned_in_rounded, 
+                      color: Colors.blueGrey)
+                    : Text('')
+                  ],
                 ),
-                Text(
-                  'A Física dos Buracos Negros Supermassivos',
-                  style: TextStyle(fontSize: 17.0, fontWeight: FontWeight.w500),
-                  maxLines: 2,
+                Container(
+                  padding: const EdgeInsets.only(right: 5.0),
+                  margin: const EdgeInsets.only(right: 5.0),
+                  child: const Text(
+                    'Astrofísica Relativista: Explorando as Previsões de Einstein',
+                    style: TextStyle(fontSize: 17.0, fontWeight: FontWeight.w600, color: Colors.black),
+                    maxLines: 2,
+                  ),
                 ),
                 Text(
                   'Stephen William Hawking',
                   style: TextStyle(
                       fontSize: 15.0,
-                      color: Color.fromARGB(255, 156, 156, 156)),
+                      color: Colors.grey[600]),
                 ),
               ],
             ),

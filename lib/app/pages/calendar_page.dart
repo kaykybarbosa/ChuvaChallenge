@@ -53,7 +53,7 @@ class _CalendarState extends State<Calendar> {
           Column(
             children: [
               Container(
-                color: Colors.blue,
+                color: Colors.blue[700],
                 margin: const EdgeInsets.only(top: 1.0, bottom: 10.0),
                 child: Row(
                   children: [
@@ -81,14 +81,14 @@ class _CalendarState extends State<Calendar> {
               Expanded(
                 child: ListView(
                   children: [
-                    const MyCard(),
+                    MyCard(),
                     Container(
                       margin: const EdgeInsets.symmetric(
                           vertical: 5.0, horizontal: 10.0),
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(5.0)),
                       child: ElevatedButton(
-                        onPressed: () => context.push('/activity'),
+                        onPressed: () => context.push('/activity'), 
                         style: ElevatedButton.styleFrom(
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(0),
@@ -116,15 +116,15 @@ class _CalendarState extends State<Calendar> {
                                 bottomRight: Radius.circular(5.0),
                               ),
                             ),
-                            child: const Column(
+                            child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
+                                const Text(
                                   'Palestra de 07:00 até 08:00',
                                   style: TextStyle(
                                       color: Colors.black, fontSize: 12.0),
-                                ),
-                                Text(
+                                ), // row com icon vem aqui
+                                const Text(
                                   'Biossinais em Mundos Oceânicos: Europa e Encélado',
                                   style: TextStyle(
                                       fontSize: 15.0,
@@ -136,7 +136,7 @@ class _CalendarState extends State<Calendar> {
                                   style: TextStyle(
                                       fontSize: 15.0,
                                       color:
-                                          Color.fromARGB(255, 156, 156, 156)),
+                                          Colors.grey[600]),
                                 ),
                               ],
                             ),
