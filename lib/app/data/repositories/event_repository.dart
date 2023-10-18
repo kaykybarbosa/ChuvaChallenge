@@ -14,23 +14,22 @@ class EventRepository implements IEventRepository{
 
   @override
   Future<List<Event>> getEvents() async{
+  
+    List<Event> events = [];
+
     final response = await client.get(
       url: "https://raw.githubusercontent.com/chuva-inc/exercicios-2023/master/dart/assets/activities.json"
     );
 
     if (response.statusCode == 200){
-      final List<Event> events = [];
-      
-      Map<String, dynamic> json = jsonDecode(response);
+      final json = jsonDecode(response.data);
+      final eventsJson = json['data'];  
 
-      json['data'].map((item) {
-        final Event event = Event.fromJson(item);
-        events.add(event);
-      });
+      for(var event in eventsJson){
+        events.add(Event.fromJson(event as Map<String, dynamic>));
+      }
     }
 
-    final List<Event> result = [];
-    return  result;
+    return events;
   }
-
 }

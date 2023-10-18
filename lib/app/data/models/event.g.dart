@@ -22,19 +22,18 @@ Event _$EventFromJson(Map<String, dynamic> json) => Event(
       category: json['category'] == null
           ? null
           : CategoryModel.fromJson(json['category'] as Map<String, dynamic>),
-      locations: json['locations'] == null
-          ? null
-          : Location.fromJson(json['locations'] as Map<String, dynamic>),
+      people: (json['people'] as List<dynamic>?)
+          ?.map<People?>((e) =>
+              e == null ? null : People.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      locations: (json['locations'] as List<dynamic>?)?.map<Location?>((e) => Location.fromJson(e)).toList(),
       typeModel: json['type'] == null
           ? null
           : TypeModel.fromJson(json['type'] as Map<String, dynamic>),
-      people: json['people'] == null
-          ? null
-          : People.fromJson(json['people'] as Map<String, dynamic>),
-      status: json['status'] as bool?,
+      status: json['status'] == 1 ? true : false as bool?,
       weight: json['weight'] as int?,
       addons: json['addons'] as String?,
-      parent: json['parent'] as String?,
+      parent: json['parent'] as int?,
       event: json['event'] as String?,
     );
 
@@ -46,9 +45,9 @@ Map<String, dynamic> _$EventToJson(Event instance) => <String, dynamic>{
       'title': instance.title?.toJson(),
       'description': instance.description?.toJson(),
       'category': instance.category?.toJson(),
-      'locations': instance.locations?.toJson(),
+      'locations': instance.locations?.map((e) => e?.toJson()).toList(),
       'type': instance.typeModel?.toJson(),
-      'people': instance.people?.toJson(),
+      'people': instance.people?.map((e) => e?.toJson()).toList(),
       'status': instance.status,
       'weight': instance.weight,
       'addons': instance.addons,

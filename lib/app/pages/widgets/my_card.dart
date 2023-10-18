@@ -1,9 +1,10 @@
+import 'package:chuva_dart/main.dart';
 import 'package:flutter/material.dart';
 
 class MyCard extends StatelessWidget {
   MyCard({super.key});
 
-  bool isFavorted = false;
+  bool? isFavorted = appPreferences.getBool('isFavorited');
 
   @override
   Widget build(BuildContext context) {
@@ -48,11 +49,11 @@ class MyCard extends StatelessWidget {
                       'Apresentação de Pôster de 07:00 até 08:00',
                       style: TextStyle(fontSize: 13.0, color: Colors.black),
                     ),
-                    isFavorted
+                    isFavorted.toString().contains('true')
                     ? const Icon(
                       Icons.turned_in_rounded, 
                       color: Colors.blueGrey)
-                    : Text('')
+                    : const Text('')
                   ],
                 ),
                 Container(

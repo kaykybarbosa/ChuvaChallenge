@@ -16,14 +16,14 @@ class Event{
   MyHtml? title;
   MyHtml? description;
   CategoryModel? category;
-  Location? locations;
+  List<Location?>? locations;
   @JsonKey(name: 'type')
   TypeModel? typeModel;
-  People? people;
+  List<People?>? people;
   bool? status;
   int? weight;
   String? addons;
-  String? parent;
+  int? parent;
   String? event;
 
   Event({

@@ -1,17 +1,34 @@
 import 'package:flutter/material.dart';
 
 class MyCurrentBotton extends StatefulWidget {
-  MyCurrentBotton(
+  const MyCurrentBotton(
       {this.favorited = false, this.isProcessing = false, super.key});
 
-  bool favorited;
-  bool isProcessing;
+  final bool? favorited;
+  final bool isProcessing;
 
   @override
   State<MyCurrentBotton> createState() => _MyCurrentBottonState();
 }
 
 class _MyCurrentBottonState extends State<MyCurrentBotton> {
+  var _isFavorited;
+
+  bool getFavorited(){
+    final valueOfFavorited = widget.favorited.toString();
+
+    setState(() {
+      if (valueOfFavorited.contains('true')){
+        _isFavorited = true;
+      }
+      else{
+        _isFavorited = false;
+      }
+    });
+
+    return _isFavorited;
+  }
+
   @override
   Widget build(BuildContext context) {
     return widget.isProcessing
@@ -28,7 +45,7 @@ class _MyCurrentBottonState extends State<MyCurrentBotton> {
           )
         : Row(
             children: [
-              widget.favorited
+              getFavorited()
                   ? const Icon(
                       Icons.star_outline,
                       color: Colors.white,
@@ -39,7 +56,7 @@ class _MyCurrentBottonState extends State<MyCurrentBotton> {
                     ),
               const SizedBox(width: 5.0),
               Text(
-                widget.favorited
+                getFavorited()
                     ? 'Remover da sua agenda'
                     : 'Adicionar à sua agenda',
                 style: const TextStyle(

@@ -8,9 +8,7 @@ part of 'location.dart';
 
 Location _$LocationFromJson(Map<String, dynamic> json) => Location(
       id: json['id'] as int?,
-      title: json['title'] == null
-          ? null
-          : MyHtml.fromJson(json['title'] as Map<String, dynamic>),
+      title: MyHtml.fromJson(json['title'] as Map<String, dynamic>),
       parent: json['parent'] as int?,
       map: json['map'] as String?,
     );
