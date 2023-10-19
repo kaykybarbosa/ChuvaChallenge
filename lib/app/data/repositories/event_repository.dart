@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:chuva_dart/app/data/http/http_client.dart';
 import 'package:chuva_dart/app/data/models/event.dart';
+import 'package:chuva_dart/configs.dart';
 
 abstract class IEventRepository{
   Future<List<Event>> getEvents();
@@ -10,15 +11,14 @@ abstract class IEventRepository{
 class EventRepository implements IEventRepository{
   final IHttpClient client;
 
+  List<Event> events = [];
+
   EventRepository({required this.client});
 
   @override
   Future<List<Event>> getEvents() async{
-  
-    List<Event> events = [];
-
     final response = await client.get(
-      url: "https://raw.githubusercontent.com/chuva-inc/exercicios-2023/master/dart/assets/activities.json"
+      url: BASE_API
     );
 
     if (response.statusCode == 200){

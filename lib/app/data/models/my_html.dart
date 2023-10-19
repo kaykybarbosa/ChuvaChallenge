@@ -5,9 +5,9 @@ part 'my_html.g.dart';
 @JsonSerializable()
 class MyHtml{
   @JsonKey(name: 'pt-br')
-  String? pt_br;
+  String? ptBr;
 
-  toJson() {}
+  MyHtml({this.ptBr});
 
-  static fromJson(Map<String, dynamic> json) {}
+  factory MyHtml.fromJson(Map<String, dynamic> json) => _$MyHtmlFromJson(json);
 }

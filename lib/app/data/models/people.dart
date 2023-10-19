@@ -28,7 +28,6 @@ class People{
     this.hash
   });
 
-  toJson() {}
+  factory People.fromJson(Map<String, dynamic> json) => _$PeopleFromJson(json);
 
-  static fromJson(Map<String, dynamic> e) {}
 }

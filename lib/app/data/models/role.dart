@@ -13,7 +13,5 @@ class Role{
     this.label
   });
 
-  static fromJson(Map<String, dynamic> json) {}
-
-  toJson() {}
+  factory Role.fromJson(Map<String, dynamic> json) => _$RoleFromJson(json);
 }

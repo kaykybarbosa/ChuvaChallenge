@@ -21,15 +21,3 @@ People _$PeopleFromJson(Map<String, dynamic> json) => People(
           : Role.fromJson(json['role'] as Map<String, dynamic>),
       hash: json['hash'] as String?,
     );
-
-Map<String, dynamic> _$PeopleToJson(People instance) => <String, dynamic>{
-      'id': instance.id,
-      'title': instance.title,
-      'name': instance.name,
-      'institution': instance.institution,
-      'bio': instance.bio?.toJson(),
-      'picture': instance.picture,
-      'weight': instance.weight,
-      'role': instance.role?.toJson(),
-      'hash': instance.hash,
-    };

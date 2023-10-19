@@ -1,20 +1,14 @@
 
+import 'package:chuva_dart/app/data/models/base/base_entity.dart';
 import 'package:chuva_dart/app/data/models/my_html.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'type_model.g.dart';
 
 @JsonSerializable(explicitToJson: true)
-class TypeModel{
-  int? id; 
-  MyHtml? title;
+class TypeModel extends BaseEntity{
 
-  TypeModel({
-    this.id,
-    this.title
-  });
+  TypeModel({id, title}) : super(id: id, title: title);
 
-  toJson() {}
-
-  static fromJson(Map<String, dynamic> json) {}
+  factory TypeModel.fromJson(Map<String, dynamic> json) => _$TypeModelFromJson(json);
 }

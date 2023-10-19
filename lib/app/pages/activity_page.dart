@@ -1,13 +1,16 @@
+import 'package:chuva_dart/app/data/models/event.dart';
 import 'package:chuva_dart/app/data/routes/routes_constants.dart';
+import 'package:chuva_dart/app/pages/controller/event_controller.dart';
 import 'package:chuva_dart/app/pages/event_page.dart';
 import 'package:chuva_dart/app/pages/profile_page.dart';
+import 'package:chuva_dart/providers.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class Activity extends StatefulWidget {
-  const Activity({super.key,required this.textPath});
+  Activity({super.key,required this.event});
 
-  final String textPath;
+  Event event;
 
   @override
   State<Activity> createState() => _ActivityState();
@@ -15,6 +18,8 @@ class Activity extends StatefulWidget {
 
 class _ActivityState extends State<Activity> {
   var currentScreen;
+  late List<Event> events;
+  Event event = Event();
 
   void goToProfileScreen(imageProfile){
     setState(() {
@@ -25,8 +30,12 @@ class _ActivityState extends State<Activity> {
   @override
   void initState() {
     super.initState();
-    currentScreen = EventPage(goTo: goToProfileScreen);
-    print(widget.textPath);
+    currentScreen = EventPage(event: widget.event, goTo: goToProfileScreen);
+    events = getIt<EventController>().events.value;
+    event = events.firstWhere((element) => element.id == 8924);
+
+    print('===========================');
+    print(event);
   }
 
   @override
@@ -39,7 +48,7 @@ class _ActivityState extends State<Activity> {
         leading: IconButton(
             onPressed: (){
               if  (currentScreen.toString().contains('EventPage')){
-                GoRouter.of(context).pushNamed(AppRoutesConstants.calendarRouteName, queryParameters: {});
+                GoRouter.of(context).pushNamed(AppRoutesConstants.calendarRouteName);
               } else {
                 GoRouter.of(context).pushNamed(AppRoutesConstants.activityRouteName);
               }
@@ -47,7 +56,7 @@ class _ActivityState extends State<Activity> {
             icon: const Icon(Icons.arrow_back)),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         centerTitle: true,
-        title: const Text('Chuva ❤️ Flutter'),
+        title: Text('Chuva ❤️ ${event.title?.ptBr ?? 'FALOU'}'),
       ),
       body: currentScreen,
     );

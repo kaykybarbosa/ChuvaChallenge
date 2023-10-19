@@ -1,3 +1,4 @@
+import 'package:chuva_dart/app/data/models/base/base_entity.dart';
 import 'package:chuva_dart/app/data/models/category_model.dart';
 import 'package:chuva_dart/app/data/models/location.dart';
 import 'package:chuva_dart/app/data/models/my_html.dart';
@@ -8,12 +9,10 @@ import 'package:json_annotation/json_annotation.dart';
 part 'event.g.dart';
 
 @JsonSerializable(explicitToJson: true)
-class Event{
-  int? id;
+class Event extends BaseEntity{
   int? changed;
   DateTime? start;
   DateTime? end;
-  MyHtml? title;
   MyHtml? description;
   CategoryModel? category;
   List<Location?>? locations;
@@ -27,11 +26,11 @@ class Event{
   String? event;
 
   Event({
-    this.id,
+    id,
     this.changed,
     this.start,
     this.end,
-    this.title,
+    title,
     this.description,
     this.category,
     this.locations,
@@ -42,7 +41,7 @@ class Event{
     this.addons,
     this.parent,
     this.event
-  });
+  }) : super(id: id, title: title);
   
   factory Event.fromJson(Map<String, dynamic> json) => _$EventFromJson(json);
 

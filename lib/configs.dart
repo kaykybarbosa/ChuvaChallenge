@@ -1,0 +1,1 @@
+const BASE_API = 'https://raw.githubusercontent.com/chuva-inc/exercicios-2023/master/dart/assets/activities.json';

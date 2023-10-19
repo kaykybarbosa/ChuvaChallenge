@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:chuva_dart/app/data/models/event.dart';
+import 'package:chuva_dart/app/pages/widgets/my_card.dart';
 import 'package:chuva_dart/app/pages/widgets/my_current_botton.dart';
 import 'package:chuva_dart/main.dart';
 import 'package:flutter/material.dart';
@@ -7,9 +9,10 @@ import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class EventPage extends StatefulWidget {
-  const EventPage({this.goTo, super.key});
+  EventPage({this.goTo, required this.event ,super.key});
 
   final Function? goTo;
+  Event event;
 
   @override
   State<EventPage> createState() => _EventPageState();
@@ -29,6 +32,7 @@ class _EventPageState extends State<EventPage> {
     super.initState();
     setState(() {
       currentBotton = MyCurrentBotton(favorited: getFavorited());
+      print(widget.event.id);
     });
   }
 
@@ -73,15 +77,17 @@ class _EventPageState extends State<EventPage> {
                 child: ListView(
                   children: [
                     Container(
-                      color: Colors.purple,
+                      color: Color(MyCard.colorFromHex(widget.event.category?.color ?? '')),
                       padding: const EdgeInsets.symmetric(
                           horizontal: 10.0, vertical: 8.0),
-                      child: const Row(
+                      child: Row(
                         children: [
                           Text(
-                            'Astrofísica e Cosmologia',
+                            widget.event.category?.title?.ptBr ?? '',
                             style:
-                                TextStyle(color: Colors.white, fontSize: 15.0),
+                                const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 15.0),
                           ),
                         ],
                       ),

@@ -1,14 +1,14 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'role.dart';
+part of 'base_entity.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-Role _$RoleFromJson(Map<String, dynamic> json) => Role(
+BaseEntity _$BaseEntityFromJson(Map<String, dynamic> json) => BaseEntity(
       id: json['id'] as int?,
-      label: json['label'] == null
+      title: json['title'] == null
           ? null
-          : MyHtml.fromJson(json['label'] as Map<String, dynamic>),
+          : MyHtml.fromJson(json['title'] as Map<String, dynamic>),
     );
