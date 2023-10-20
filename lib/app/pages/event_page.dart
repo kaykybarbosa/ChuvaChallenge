@@ -1,17 +1,18 @@
 import 'dart:async';
 
 import 'package:chuva_dart/app/data/models/event.dart';
-import 'package:chuva_dart/app/pages/widgets/my_card.dart';
+import 'package:chuva_dart/app/pages/controller/event_controller.dart';
+import 'package:chuva_dart/app/pages/shared/utils.dart';
+import 'package:chuva_dart/app/pages/widgets/my_card_people.dart';
 import 'package:chuva_dart/app/pages/widgets/my_current_botton.dart';
 import 'package:chuva_dart/main.dart';
+import 'package:chuva_dart/providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class EventPage extends StatefulWidget {
-  EventPage({this.goTo, required this.event ,super.key});
+  EventPage({required this.event, super.key});
 
-  final Function? goTo;
   Event event;
 
   @override
@@ -24,15 +25,11 @@ class _EventPageState extends State<EventPage> {
   bool _isProcessing = false;
   Widget currentBotton = const MyCurrentBotton();
 
-  final String _image =
-      'https:\/\/static.galoa.com.br\/file\/Eventmanager-Private\/styles\/large\/s3\/eventmanager_person\/Screenshot%202023-10-10%20at%2013.06.35.png?VersionId=4_z9e083e414507696175f50716_f10473fd681469d07_d20231010_m160744_c003_v0312007_t0020_u01696954064581\u0026itok=XSqu4FiW';
-
   @override
   void initState() {
     super.initState();
     setState(() {
-      currentBotton = MyCurrentBotton(favorited: getFavorited());
-      print(widget.event.id);
+      currentBotton = MyCurrentBotton(favorited: getFavorited(widget.event.id));
     });
   }
 
@@ -42,32 +39,49 @@ class _EventPageState extends State<EventPage> {
         setState(() {
           _isVisible = false;
           _isProcessing = false;
-          currentBotton = MyCurrentBotton(favorited: getFavorited());
+          currentBotton = MyCurrentBotton(favorited: getFavorited(widget.event.id));
         });
       }
     });
   }
 
   onPressed() {
-    _favorited = !getFavorited().toString().contains('true');
-    setFavorited(_favorited);
+    var eventId = widget.event.id;
+    _favorited = !getFavorited(eventId).toString().contains('true');
+    setFavorited(eventId ,_favorited);
     _isVisible = true;
     _isProcessing = true;
     currentBotton = MyCurrentBotton(
         favorited: _favorited, isProcessing: true); // is fovorited
     _showFooter();
   }
-  
-  void setFavorited(isFavorited) {
-    appPreferences.setBool('isFavorited', isFavorited);
+
+  void setFavorited(eventId , isFavorited) {
+    appPreferences.setBool('$eventId', isFavorited);
   }
 
-  bool? getFavorited() {
-    return appPreferences.getBool('isFavorited');
+  bool? getFavorited(eventId) {
+    return appPreferences.getBool('$eventId');
   }
 
   @override
   Widget build(BuildContext context) {
+    var event = widget.event;
+    var dateStart = widget.event.start?.toLocal();
+    var dateEnd = widget.event.end?.toLocal();
+
+    getParent(){
+      var listParent;
+      if (event.parent.toString().isNotEmpty){
+        var events = getIt<EventController>().events;
+        events.value.forEach((element) {
+          if (element.id == event.parent!){
+            listParent.add(element);
+          }
+         });
+      }
+    }
+
     return Scaffold(
       body: Stack(
         children: [
@@ -77,17 +91,16 @@ class _EventPageState extends State<EventPage> {
                 child: ListView(
                   children: [
                     Container(
-                      color: Color(MyCard.colorFromHex(widget.event.category?.color ?? '')),
+                      color:
+                          Color(Utils.colorFromHex(event.category?.color ?? '')),
                       padding: const EdgeInsets.symmetric(
                           horizontal: 10.0, vertical: 8.0),
                       child: Row(
                         children: [
                           Text(
-                            widget.event.category?.title?.ptBr ?? '',
-                            style:
-                                const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 15.0),
+                            event.category?.title?.ptBr ?? '',
+                            style: const TextStyle(
+                                color: Colors.white, fontSize: 15.0),
                           ),
                         ],
                       ),
@@ -97,12 +110,12 @@ class _EventPageState extends State<EventPage> {
                           top: 5.0, right: 5.0, left: 5.0),
                       padding: const EdgeInsets.symmetric(
                           vertical: 5.0, horizontal: 5.0),
-                      child: const Row(
+                      child: Row(
                         children: [
                           Expanded(
                             child: Text(
-                              'A Física dos Buracos Negros Supermassivos',
-                              style: TextStyle(
+                              event.title?.ptBr ?? '',
+                              style: const TextStyle(
                                   fontSize: 22.0, fontWeight: FontWeight.bold),
                               textAlign: TextAlign.center,
                             ),
@@ -115,8 +128,12 @@ class _EventPageState extends State<EventPage> {
                           left: 10.0, bottom: 5, top: 5.0),
                       child: Column(
                         children: [
-                          myRow(Icons.access_time, 'Domingo 09:00h - 10:00h'),
-                          myRow(Icons.location_on, 'Luanda')
+                          myRow(
+                            Icons.access_time,
+                            '${Utils.getDayWeek(dateStart?.weekday ?? 0)} ${Utils.formatHour(dateStart)}h - ${Utils.formatHour(dateEnd)}h',
+                          ),
+                          myRow(Icons.location_on,
+                              event.locations?.first?.title?.ptBr ?? '')
                         ],
                       ),
                     ),
@@ -137,15 +154,15 @@ class _EventPageState extends State<EventPage> {
                     ),
                     Container(
                       margin: const EdgeInsets.symmetric(
-                          vertical: 50, horizontal: 15.0),
+                          vertical: 40, horizontal: 15.0),
                       padding: const EdgeInsets.only(right: 5.0),
-                      child: const Row(
+                      child: Row(
                         children: [
                           Expanded(
                               child: HtmlWidget(
-                            '''<div class=\"flex flex-grow flex-col gap-3 max-w-full\">\r\n<div class=\"min-h-[20px] flex flex-col items-start gap-3 whitespace-pre-wrap break-words overflow-x-auto\">\r\n<div class=\"markdown prose w-full break-words dark:prose-invert dark\">\r\n<p>A Astrofísica Relativista dedica-se ao estudo dos fenômenos cósmicos onde a teoria da relatividade geral de Einstein é crucial para entender os processos físicos envolvidos. Esta teoria prevê a existência de buracos negros, ondas gravitacionais e a curvatura do espaço-tempo em presença de massa.</p>\r\n\r\n<p>Os astrofísicos exploram objetos como buracos negros e estrelas de nêutrons para testar as previsões da relatividade em ambientes extremos, tais como fortes campos gravitacionais. A observação de ondas gravitacionais, em particular, abriu uma nova janela para o universo, permitindo estudos acerca da colisão de objetos compactos e dinâmicas gravitacionais intensas.</p>\r\n</div>\r\n</div>\r\n</div>\r\n
-                          ''',
-                            textStyle: TextStyle(fontWeight: FontWeight.w500),
+                            event.description?.ptBr ?? '',
+                            textStyle:
+                                const TextStyle(fontWeight: FontWeight.w500),
                           )),
                         ],
                       ),
@@ -155,67 +172,29 @@ class _EventPageState extends State<EventPage> {
                       padding: const EdgeInsets.all(10.0),
                       child: Column(
                         children: [
-                          const Row(
+                          Row(
                             children: [
                               Text(
-                                'Coordenador',
-                                style: TextStyle(
+                                event.people?.firstOrNull?.role?.label
+                                        ?.ptBr ??
+                                    '',
+                                style: const TextStyle(
                                     fontSize: 18.0,
                                     fontWeight: FontWeight.w500),
                               ),
                             ],
                           ),
                           const SizedBox(height: 10.0),
-                          ElevatedButton(
-                            onPressed: () {
-                              widget.goTo!(_image);
-                            },
-                            style: ElevatedButton.styleFrom(
-                                elevation: 0,
-                                backgroundColor: Colors.white,
-                                padding: const EdgeInsets.all(0),
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(0))),
-                            child: Row(
-                              children: [
-                                ClipRRect(
-                                    borderRadius: BorderRadius.circular(30),
-                                    child: _image.isNotEmpty
-                                        ? Image.network(
-                                            _image,
-                                            width: 60,
-                                          )
-                                        : const Icon(
-                                            FontAwesomeIcons.solidUser,
-                                            size: 50,
-                                            color: Colors.grey,
-                                          )),
-                                Container(
-                                  margin: const EdgeInsets.symmetric(
-                                      horizontal: 10.0),
-                                  padding: const EdgeInsets.only(left: 10.0),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                          Column(
+                            children: event.people?.map((people) {
+                                  return Column(
                                     children: [
-                                      const Text(
-                                        'Stephen William Hawking',
-                                        style: TextStyle(
-                                            fontSize: 18.0,
-                                            color: Colors.black),
-                                      ),
-                                      Text(
-                                        'Universidade de Cambridge',
-                                        style: TextStyle(
-                                            fontSize: 16.0,
-                                            color: Colors.grey[600]),
-                                      ),
+                                      MyCardPeople(people: people!),
+                                      const SizedBox(height:20), // Adicione um SizedBox entre os MyCardPeople
                                     ],
-                                  ),
-                                )
-                              ],
-                            ),
-                          ),
+                                  );
+                                }).toList() ?? [],
+                          )
                         ],
                       ),
                     ),
@@ -236,7 +215,7 @@ class _EventPageState extends State<EventPage> {
                     margin: const EdgeInsets.only(
                         top: 15.0, bottom: 30.0, left: 5.0),
                     child: Text(
-                      getFavorited().toString().contains('true')
+                      getFavorited(widget.event.id).toString().contains('true')
                           ? 'Vamos te lembrar dessa atividade.'
                           : 'Não vamos mais te lembrar dessa atividade.',
                       style:

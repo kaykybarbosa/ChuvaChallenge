@@ -1,4 +1,5 @@
 import 'package:chuva_dart/app/data/models/event.dart';
+import 'package:chuva_dart/app/data/models/people.dart';
 import 'package:chuva_dart/app/data/routes/routes_constants.dart';
 import 'package:chuva_dart/app/pages/activity_page.dart';
 import 'package:chuva_dart/app/pages/calendar_page.dart';
@@ -7,7 +8,6 @@ import 'package:chuva_dart/app/pages/profile_page.dart';
 import 'package:chuva_dart/providers.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:collection/collection.dart';
 
 final routes = GoRouter(
   initialLocation: "/calendar",
@@ -18,28 +18,29 @@ final routes = GoRouter(
       pageBuilder: (context, state) => const MaterialPage(child: Calendar(), fullscreenDialog: true),
     ),
     GoRoute(
+      name: AppRoutesConstants.eventRouteName,
       path: '/activity/:eventId',
       builder: (context, state) {
-      final eventId = state.pathParameters['eventId']!;
+        final eventId = int.parse(state.pathParameters['eventId']!);
 
-      // List<Event> events = getIt<EventController>().events.value;
-      // final event = events.firstWhere((event) => event.id == eventId);
+        final event = getIt<EventController>().getEventById(eventId);
 
-      print('ID_ROUTE${eventId is int}');
-      
-
-      return Activity(event: Event());
+        return Activity(event: event);
       },
     ),
-    // GoRoute(
-    //   name: AppRoutesConstants.eventRouteName,
-    //   path: "/event/:eventId",
-    //   pageBuilder: (context, state) => const MaterialPage(child: EventPage()),
-    // ),
     GoRoute(
       name: AppRoutesConstants.profileRouteName,
-      path: "/profile",
-      pageBuilder: (context, state) => const MaterialPage(child: ProfilePage()),
+      path: "/profile/:peopleId",
+      pageBuilder: (context, state) {
+        final peopleId = int.parse(state.pathParameters['peopleId']!);
+
+        final people = getIt<EventController>().getPeopleById(peopleId);
+
+        return MaterialPage(
+          child: ProfilePage(people: people),
+          fullscreenDialog: true
+        );
+      }
     )
   ]
 );

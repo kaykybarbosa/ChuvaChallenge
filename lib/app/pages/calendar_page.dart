@@ -1,5 +1,5 @@
+import 'package:chuva_dart/app/data/models/event.dart';
 import 'package:chuva_dart/app/pages/controller/event_controller.dart';
-import 'package:chuva_dart/app/pages/widgets/my_app_bar.dart';
 import 'package:chuva_dart/app/pages/widgets/my_calendar.dart';
 import 'package:chuva_dart/app/pages/widgets/my_card.dart';
 import 'package:chuva_dart/providers.dart';
@@ -14,135 +14,131 @@ class Calendar extends StatefulWidget {
 
 class _CalendarState extends State<Calendar> {
   late EventController controller;
+  List<Event> events = [];
 
   @override
   void initState() {
     super.initState();
     controller = getIt<EventController>();
-    print('INIT: ${controller.events.value.length}');
+  }
+
+  List<Event> getEventsByDay(day) {
+    List<Event> list = [];
+
+    day = int.parse(day);
+    setState(() {
+      if (events.isNotEmpty) {
+        events.clear();
+      }
+    });
+
+    controller.events.value.forEach((event) {
+      if (event.start?.day == day) {
+        setState(() {
+          list.add(event);
+        });
+      }
+    });
+
+    return list;
   }
 
   @override
   Widget build(BuildContext context) {
-    final MyAppBar myAppBar = MyAppBar(context: context);
-
     return Scaffold(
-        appBar: myAppBar.get(),
-        backgroundColor: const Color.fromARGB(255, 237, 236, 236),
-        body: Column(
-          children: [
-            const MyCalendar(),
-            Expanded(
-              child: AnimatedBuilder(
-                animation: Listenable.merge([
-                  controller.isLoading,
-                  controller.events
-                ]), 
+      appBar: myAppBar(),
+      backgroundColor: const Color.fromARGB(255, 237, 236, 236),
+      body: Column(
+        children: [
+          MyCalendar(
+            onPressed: getEventsByDay,
+          ),
+          Expanded(
+            child: AnimatedBuilder(
+                animation:
+                    Listenable.merge([controller.isLoading, controller.events]),
                 builder: (context, child) {
-                  if (controller.isLoading.value){
+                  if (controller.isLoading.value) {
                     return const Center(child: CircularProgressIndicator());
                   }
 
                   return ListView(
-                    // separatorBuilder: (context, index) => const SizedBox(
-                    //   height: 32,
-                    // ), 
-                    // itemCount: controller.events.value.length,
-                    // itemBuilder: (context, index) {
-                    //   MyCard(event: controller.events.value[index],);
-                    // }
                     children: [
-                      for (var event in controller.events.value)
+                      for (var event in controller.events.value) 
                         MyCard(event: event)
                     ],
-                    );
-                } 
-                ),
-            )
+                  );
+                }),
+          )
+        ],
+      ),
+    );
+  }
+
+  myAppBar(){
+    return AppBar(
+      elevation: 3,
+      shadowColor: Colors.white,
+      centerTitle: true,
+      leading: IconButton(
+        onPressed: () {},
+        style: ButtonStyle(
+          padding: MaterialStateProperty.all(
+            const EdgeInsets.only(bottom: 2.0, top: 2.0),
+          ),
+        ),
+        icon: const Icon(Icons.arrow_back),
+      ),
+      backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+      bottom: PreferredSize(
+        preferredSize: const Size.fromHeight(100.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text(
+              'Chuva ❤️ Flutter',
+              style: TextStyle(fontSize: 20.0),
+            ),
+            const Text(
+              'Programação',
+              style: TextStyle(fontSize: 20.0),
+            ),
+            Container(
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(25.0),
+                  color: Colors.white),
+              padding: const EdgeInsets.all(6.0),
+              margin:
+                  const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+              child: Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 12.0, vertical: 5.0),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(25.0),
+                      color: Theme.of(context).colorScheme.inversePrimary,
+                    ),
+                    child: const Icon(
+                      Icons.calendar_month_outlined,
+                      color: Colors.black,
+                      size: 30.0,
+                    ),
+                  ),
+                  const SizedBox(width: 50.0),
+                  const Text(
+                    'Exibindo todas atividades',
+                    style: TextStyle(
+                        fontSize: 15.0,
+                        color: Colors.black,
+                        fontWeight: FontWeight.w500),
+                  ),
+                ],
+              ),
+            ),
           ],
-        ));
+        ),
+      ),
+    );
   }
 }
-
-// Column(
-//         children: [
-//           const MyCalendar(),
-//           Expanded(
-//             child: ListView(
-//               children: [
-                
-//               ],
-//             )
-//           ),
-//         ],
-//       ),
-
-// ListView(
-//                   children: [
-//                     MyCard(),
-//                     Container(
-//                       margin: const EdgeInsets.symmetric(
-//                           vertical: 5.0, horizontal: 10.0),
-//                       decoration: BoxDecoration(
-//                           borderRadius: BorderRadius.circular(5.0)),
-//                       child: ElevatedButton(
-//                         onPressed: (){
-//                           context.push('/activity/10');
-//                         } , 
-//                         style: ElevatedButton.styleFrom(
-//                             shape: RoundedRectangleBorder(
-//                               borderRadius: BorderRadius.circular(0),
-//                             ),
-//                             padding: const EdgeInsets.all(0)),
-//                         child: Container(
-//                           padding: const EdgeInsets.only(left: 5.0),
-//                           decoration: BoxDecoration(
-//                               color: Colors.lightBlue,
-//                               borderRadius: BorderRadius.circular(5.0),
-//                               boxShadow: const [
-//                                 BoxShadow(
-//                                     color: Colors.grey,
-//                                     offset: Offset(0, 2),
-//                                     blurRadius: 4.0,
-//                                     spreadRadius: 0)
-//                               ]),
-//                           child: Container(
-//                             padding: const EdgeInsets.only(
-//                                 left: 20.0, top: 10.0, bottom: 10.0, right: 15.0),
-//                             decoration: const BoxDecoration(
-//                               color: Colors.white,
-//                               borderRadius: BorderRadius.only(
-//                                 topRight: Radius.circular(5.0),
-//                                 bottomRight: Radius.circular(5.0),
-//                               ),
-//                             ),
-//                             child: Column(
-//                               crossAxisAlignment: CrossAxisAlignment.start,
-//                               children: [
-//                                 const Text(
-//                                   'Palestra de 07:00 até 08:00',
-//                                   style: TextStyle(
-//                                       color: Colors.black, fontSize: 12.0),
-//                                 ), // row com icon vem aqui
-//                                 const Text(
-//                                   'Biossinais em Mundos Oceânicos: Europa e Encélado',
-//                                   style: TextStyle(
-//                                       fontSize: 15.0,
-//                                       fontWeight: FontWeight.w500,
-//                                       color: Colors.black),
-//                                 ),
-//                                 Text(
-//                                   'Neil deGrasse Tyson, Stephen William Hawking',
-//                                   style: TextStyle(
-//                                       fontSize: 15.0,
-//                                       color:
-//                                           Colors.grey[600]),
-//                                 ),
-//                               ],
-//                             ),
-//                           ),
-//                         ),
-//                       ),
-//                     ),
-//                   ],
-//                 )

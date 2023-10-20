@@ -11,8 +11,8 @@ Event _$EventFromJson(Map<String, dynamic> json) => Event(
       changed: json['changed'] as int?,
       start: json['start'] == null
           ? null
-          : DateTime.parse(json['start'] as String),
-      end: json['end'] == null ? null : DateTime.parse(json['end'] as String),
+          : DateTime.tryParse(json['start'] as String),
+      end: json['end'] == null ? null : DateTime.tryParse(json['end'] as String),
       title: MyHtml.fromJson(json['title']),
       description: json['description'] == null
           ? null

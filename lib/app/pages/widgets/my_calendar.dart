@@ -1,14 +1,17 @@
-import 'package:chuva_dart/app/pages/widgets/my_botton_date.dart';
 import 'package:flutter/material.dart';
 
 class MyCalendar extends StatefulWidget {
-  const MyCalendar({super.key});
+  MyCalendar({super.key, required this.onPressed});
+
+  final Function onPressed;
 
   @override
   State<MyCalendar> createState() => _MyCalendarState();
 }
 
 class _MyCalendarState extends State<MyCalendar> {
+  final List<String> numbers = ['26', '27', '28', '29', '30'];
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -29,13 +32,32 @@ class _MyCalendarState extends State<MyCalendar> {
               maxLines: 2,
             ),
           ),
-          const MyBottonDate(number: '26'),
-          const MyBottonDate(number: '27'),
-          const MyBottonDate(number: '28'),
-          const MyBottonDate(number: '29'),
-          const MyBottonDate(number: '30'),
+          for (var number in numbers)
+            myBottonDate(number: number, onPressed: widget.onPressed)
         ],
       ),
     );
   }
+}
+
+Widget myBottonDate({number, onPressed}){
+  return SizedBox(
+      height: 50.0,
+      width: 50.0,
+      child: TextButton(
+        onPressed: () {
+          onPressed(number);
+        },
+        style: TextButton.styleFrom(
+          backgroundColor: Colors.blue[700],
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(0),
+          ),
+        ),
+        child: Text(
+          number,
+          style: const TextStyle(color: Colors.white),
+        ),
+      ),
+    );
 }

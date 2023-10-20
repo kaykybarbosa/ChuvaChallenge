@@ -1,8 +1,8 @@
 import 'package:chuva_dart/app/data/models/event.dart';
+import 'package:chuva_dart/app/pages/shared/utils.dart';
 import 'package:chuva_dart/main.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 
 class MyCard extends StatefulWidget {
   MyCard({required this.event, super.key});
@@ -11,30 +11,18 @@ class MyCard extends StatefulWidget {
 
   @override
   State<MyCard> createState() => _MyCardState();
-
-  static int colorFromHex(String hexColor) {
-    hexColor = hexColor.toUpperCase().replaceAll("#", "");
-    if (hexColor.length == 6) {
-      hexColor = "FF$hexColor";
-    }
-
-    try {
-      final hexNum = int.parse(hexColor, radix: 16);
-      return hexNum;
-    } catch (e) {
-      return 0xFF1976D2;
-    }
-  }
 }
 
 class _MyCardState extends State<MyCard> {
-  bool? isFavorted = appPreferences.getBool('isFavorited');
+  bool? isFavorted = false;
 
-  String formatHour(DateTime? dateTime){
-    String date = DateFormat('HH:mm').format(dateTime!);
-    return date;
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      isFavorted = appPreferences.getBool('${widget.event.id}');
+    });
   }
-
   
   @override
   Widget build(BuildContext context) {
@@ -52,7 +40,7 @@ class _MyCardState extends State<MyCard> {
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5.0),
               color: Color(
-                MyCard.colorFromHex(widget.event.category?.color ?? '')
+                Utils.colorFromHex(widget.event.category?.color ?? '')
               ),
               boxShadow: const [
                 BoxShadow(
@@ -73,20 +61,23 @@ class _MyCardState extends State<MyCard> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                     Text(
-                      '${widget.event.typeModel?.title?.ptBr ?? ''} de ${formatHour(widget.event.start?.toLocal())} até ${formatHour(widget.event.end?.toLocal())}',
-                      style: const TextStyle(fontSize: 13.0, color: Colors.black),
-                    ),
-                    isFavorted.toString().contains('true')
-                    ? const Icon(
-                      Icons.turned_in_rounded, 
-                      color: Colors.blueGrey)
-                    : const Text('')
-                  ],
+                Container(
+                  margin: const EdgeInsets.only(top: 2.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                       Text(
+                        '${widget.event.typeModel?.title?.ptBr ?? ''} de ${Utils.formatHour(widget.event.start?.toLocal())} até ${Utils.formatHour(widget.event.end?.toLocal())}',
+                        style: const TextStyle(fontSize: 13.0, color: Colors.black, ),
+                      ),
+                      isFavorted.toString().contains('true')
+                      ? const Icon(
+                        Icons.turned_in_rounded, 
+                        color: Colors.blueGrey)
+                      : const Text('')
+                    ],
+                  ),
                 ),
                 Container(
                   padding: const EdgeInsets.only(right: 5.0),
@@ -103,12 +94,13 @@ class _MyCardState extends State<MyCard> {
                 ),
                 Row(
                   children: [
-                    for (var p in widget.event.people ?? widget.event.people!.toList())
+                    for (var p in widget.event.people ?? [])
                       Text('${p?.name}, ',
                       style: TextStyle(
                           fontSize: 15.0,
                           color: Colors.grey[600])
                       ),
+                      
                   ],
                 ),
               ],
