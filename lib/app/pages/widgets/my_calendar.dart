@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class MyCalendar extends StatefulWidget {
-  MyCalendar({super.key, required this.onPressed});
+  const MyCalendar({super.key, required this.onPressed});
 
   final Function onPressed;
 
@@ -38,26 +38,32 @@ class _MyCalendarState extends State<MyCalendar> {
       ),
     );
   }
-}
 
 Widget myBottonDate({number, onPressed}){
   return SizedBox(
       height: 50.0,
       width: 50.0,
-      child: TextButton(
-        onPressed: () {
-          onPressed(number);
-        },
-        style: TextButton.styleFrom(
-          backgroundColor: Colors.blue[700],
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(0),
-          ),
+      child: Ink(
+        decoration: BoxDecoration(
+          color: Colors.grey[900],
+          borderRadius: BorderRadius.circular(0),
         ),
-        child: Text(
-          number,
-          style: const TextStyle(color: Colors.white),
+        child: TextButton(
+          onPressed: () {
+            onPressed(number);
+          },
+          style: TextButton.styleFrom(
+            backgroundColor: Colors.blue[700],
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(0),
+            ),
+          ),
+          child: Text(
+            number,
+            style: TextStyle(color: Colors.grey[400]),
+          ),
         ),
       ),
     );
+}
 }

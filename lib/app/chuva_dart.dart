@@ -11,7 +11,7 @@ class ChuvaDart extends StatelessWidget {
       title: 'Chuva Demo',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.blue,
+          seedColor: const Color.fromARGB(255, 3, 127, 223),
         ),
         useMaterial3: true,
       ),

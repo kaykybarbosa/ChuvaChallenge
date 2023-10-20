@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:chuva_dart/app/data/models/event.dart';
 import 'package:chuva_dart/app/pages/controller/event_controller.dart';
 import 'package:chuva_dart/app/pages/shared/utils.dart';
+import 'package:chuva_dart/app/pages/widgets/my_card.dart';
 import 'package:chuva_dart/app/pages/widgets/my_card_people.dart';
 import 'package:chuva_dart/app/pages/widgets/my_current_botton.dart';
 import 'package:chuva_dart/main.dart';
@@ -11,9 +12,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 
 class EventPage extends StatefulWidget {
-  EventPage({required this.event, super.key});
+  const EventPage({required this.event, super.key});
 
-  Event event;
+  final Event event;
 
   @override
   State<EventPage> createState() => _EventPageState();
@@ -23,15 +24,10 @@ class _EventPageState extends State<EventPage> {
   bool? _favorited;
   bool _isVisible = false;
   bool _isProcessing = false;
-  Widget currentBotton = const MyCurrentBotton();
+  Widget _currentBotton = const MyCurrentBotton();
 
-  @override
-  void initState() {
-    super.initState();
-    setState(() {
-      currentBotton = MyCurrentBotton(favorited: getFavorited(widget.event.id));
-    });
-  }
+  List<Event> _listParents = [];
+  List<Event> _listDependency = [];
 
   void _showFooter() {
     Timer(const Duration(seconds: 2), () {
@@ -39,7 +35,8 @@ class _EventPageState extends State<EventPage> {
         setState(() {
           _isVisible = false;
           _isProcessing = false;
-          currentBotton = MyCurrentBotton(favorited: getFavorited(widget.event.id));
+          _currentBotton =
+              MyCurrentBotton(favorited: getFavorited(widget.event.id));
         });
       }
     });
@@ -48,15 +45,15 @@ class _EventPageState extends State<EventPage> {
   onPressed() {
     var eventId = widget.event.id;
     _favorited = !getFavorited(eventId).toString().contains('true');
-    setFavorited(eventId ,_favorited);
+    setFavorited(eventId, _favorited);
     _isVisible = true;
     _isProcessing = true;
-    currentBotton = MyCurrentBotton(
+    _currentBotton = MyCurrentBotton(
         favorited: _favorited, isProcessing: true); // is fovorited
     _showFooter();
   }
 
-  void setFavorited(eventId , isFavorited) {
+  void setFavorited(eventId, isFavorited) {
     appPreferences.setBool('$eventId', isFavorited);
   }
 
@@ -64,23 +61,78 @@ class _EventPageState extends State<EventPage> {
     return appPreferences.getBool('$eventId');
   }
 
+  showParents() {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 30.0),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              const SizedBox(width: 25.0),
+              Text(
+                'Sub-atividades',
+                style: TextStyle(color: Colors.grey[600], fontSize: 15.0),
+              ),
+            ],
+          ),
+          const SizedBox(height: 15.0),
+          Column(
+              children: _listParents.map((e) {
+            return Column(
+              children: [MyCard(event: e)],
+            );
+          }).toList()),
+        ],
+      ),
+    );
+  }
+
+  showDependency(){
+    var nameEvent = _listDependency.first.title?.ptBr;
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+      color: Colors.blue[700],
+      child: Row(
+        children: [
+          Icon(
+            Icons.calendar_month,
+            color: Colors.grey[300],
+            size: 26.0,
+          ),
+          const SizedBox(width: 8.0),
+          Expanded(
+            child: Text(
+              'Essa atividade é parte de "$nameEvent"',
+              maxLines: 2,
+              style: TextStyle(
+                color: Colors.grey[300],
+                fontSize: 14.0),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      _currentBotton =
+          MyCurrentBotton(favorited: getFavorited(widget.event.id));
+      
+      _listParents = getIt<EventController>().getEventParentById(widget.event.id);
+
+      _listDependency = getIt<EventController>().getEventDependencyById(widget.event.parent);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     var event = widget.event;
     var dateStart = widget.event.start?.toLocal();
     var dateEnd = widget.event.end?.toLocal();
-
-    getParent(){
-      var listParent;
-      if (event.parent.toString().isNotEmpty){
-        var events = getIt<EventController>().events;
-        events.value.forEach((element) {
-          if (element.id == event.parent!){
-            listParent.add(element);
-          }
-         });
-      }
-    }
 
     return Scaffold(
       body: Stack(
@@ -91,8 +143,8 @@ class _EventPageState extends State<EventPage> {
                 child: ListView(
                   children: [
                     Container(
-                      color:
-                          Color(Utils.colorFromHex(event.category?.color ?? '')),
+                      color: Color(
+                          Utils.colorFromHex(event.category?.color ?? '')),
                       padding: const EdgeInsets.symmetric(
                           horizontal: 10.0, vertical: 8.0),
                       child: Row(
@@ -105,6 +157,9 @@ class _EventPageState extends State<EventPage> {
                         ],
                       ),
                     ),
+                    _listDependency.isNotEmpty
+                    ? showDependency()
+                    : const Text(''),
                     Container(
                       margin: const EdgeInsets.only(
                           top: 5.0, right: 5.0, left: 5.0),
@@ -149,9 +204,12 @@ class _EventPageState extends State<EventPage> {
                           style: myStyle(_isProcessing),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
-                            children: [currentBotton],
+                            children: [_currentBotton],
                           )),
                     ),
+                    _listParents.isNotEmpty
+                        ? showParents()
+                        : const Text(''),
                     Container(
                       margin: const EdgeInsets.symmetric(
                           vertical: 40, horizontal: 15.0),
@@ -175,8 +233,7 @@ class _EventPageState extends State<EventPage> {
                           Row(
                             children: [
                               Text(
-                                event.people?.firstOrNull?.role?.label
-                                        ?.ptBr ??
+                                event.people?.firstOrNull?.role?.label?.ptBr ??
                                     '',
                                 style: const TextStyle(
                                     fontSize: 18.0,
@@ -190,11 +247,11 @@ class _EventPageState extends State<EventPage> {
                                   return Column(
                                     children: [
                                       MyCardPeople(people: people!),
-                                      const SizedBox(height:20), // Adicione um SizedBox entre os MyCardPeople
+                                      const SizedBox(height:20), 
                                     ],
                                   );
-                                }).toList() ?? [],
-                          )
+                                }).toList() ?? []
+                          ),
                         ],
                       ),
                     ),
@@ -250,5 +307,5 @@ myRow(iconData, label) {
 myStyle(isProcessing) {
   return ElevatedButton.styleFrom(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-      backgroundColor: isProcessing ? Colors.grey[400] : Colors.blue[700]);
+      backgroundColor: isProcessing ? Colors.grey[200] : Colors.blue[700]);
 }

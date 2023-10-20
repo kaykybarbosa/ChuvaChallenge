@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class MyCard extends StatefulWidget {
-  MyCard({required this.event, super.key});
+  const MyCard({required this.event, super.key});
 
-  Event event;
+  final Event event;
 
   @override
   State<MyCard> createState() => _MyCardState();
@@ -23,7 +23,7 @@ class _MyCardState extends State<MyCard> {
       isFavorted = appPreferences.getBool('${widget.event.id}');
     });
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -36,12 +36,11 @@ class _MyCardState extends State<MyCard> {
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(0))),
         child: Container(
-          padding: const EdgeInsets.only(left: 5.0),
+          padding: const EdgeInsets.only(left: 6.0),
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5.0),
-              color: Color(
-                Utils.colorFromHex(widget.event.category?.color ?? '')
-              ),
+              color:
+                  Color(Utils.colorFromHex(widget.event.category?.color ?? '')),
               boxShadow: const [
                 BoxShadow(
                     color: Colors.grey,
@@ -67,42 +66,49 @@ class _MyCardState extends State<MyCard> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                       Text(
+                      Text(
                         '${widget.event.typeModel?.title?.ptBr ?? ''} de ${Utils.formatHour(widget.event.start?.toLocal())} até ${Utils.formatHour(widget.event.end?.toLocal())}',
-                        style: const TextStyle(fontSize: 13.0, color: Colors.black, ),
+                        style: const TextStyle(
+                          fontSize: 13.0,
+                          color: Colors.black,
+                        ),
                       ),
                       isFavorted.toString().contains('true')
-                      ? const Icon(
-                        Icons.turned_in_rounded, 
-                        color: Colors.blueGrey)
-                      : const Text('')
+                          ? const Icon(Icons.turned_in_rounded,
+                              color: Colors.blueGrey)
+                          : const Text('')
                     ],
                   ),
                 ),
                 Container(
-                  padding: const EdgeInsets.only(right: 5.0),
-                  margin: const EdgeInsets.only(right: 8.0),
+                    padding: const EdgeInsets.only(right: 5.0),
+                    margin: const EdgeInsets.only(right: 8.0),
                     child: Text(
-                      widget.event.title?.ptBr ?? '', 
+                      widget.event.title?.ptBr ?? '',
                       style: const TextStyle(
-                        fontSize: 16.0, 
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black),
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.black),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                    )
-                ),
+                    )),
                 Row(
-                  children: [
-                    for (var p in widget.event.people ?? [])
-                      Text('${p?.name}, ',
-                      style: TextStyle(
-                          fontSize: 15.0,
-                          color: Colors.grey[600])
-                      ),
-                      
-                  ],
-                ),
+                  children: widget.event.people?.map((people) {
+                        String name = people?.name ?? '';
+                        int totalPeople = widget.event.people?.length ?? 0;
+                        int currentIndex =  widget.event.people?.indexOf(people) ?? 0;
+                        String separator = (currentIndex < totalPeople - 1) ? ', ' : '';
+
+                        return Text(
+                          '$name$separator',
+                          style: TextStyle(
+                            fontSize: 15.0,
+                            color: Colors.grey[600],
+                          ),
+                        );
+                      }).toList() ??
+                      [],
+                )
               ],
             ),
           ),

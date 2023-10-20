@@ -1,12 +1,13 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chuva_dart/app/data/models/people.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 
 class MyCardPeople extends StatefulWidget {
-  MyCardPeople({super.key, required this.people});
+  const MyCardPeople({super.key, required this.people});
 
-  People people;
+  final People people;
 
   @override
   State<MyCardPeople> createState() => _MyCardPeopleState();
@@ -36,11 +37,13 @@ class _MyCardPeopleState extends State<MyCardPeople> {
               child: Container(
                 color: Colors.grey[100],
                 child: image.isNotEmpty
-                    ? Image.network(
-                        image,
+                    ? Image(
+                        image: CachedNetworkImageProvider(
+                          image,
+                          maxHeight: 165,
+                          maxWidth: 165
+                        ),
                         width: 60,
-                        cacheHeight: 165,
-                        cacheWidth: 165,
                         loadingBuilder: (context, child, progress) {
                           if (progress == null){
                             return child;

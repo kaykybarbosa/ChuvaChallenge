@@ -42,7 +42,7 @@ class Event extends BaseEntity{
     this.parent,
     this.event
   }) : super(id: id, title: title);
-  
+
   factory Event.fromJson(Map<String, dynamic> json) => _$EventFromJson(json);
 
 }

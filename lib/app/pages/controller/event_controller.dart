@@ -54,4 +54,28 @@ class EventController{
 
     return peopleInEvent;
   }
+
+  List<Event> getEventParentById(id){
+    List<Event> listParent = [];
+
+    for (var event in events.value){
+      if (event.parent == id){
+        listParent.add(event);
+      }
+    }
+
+    return listParent;
+  }
+
+  List<Event> getEventDependencyById(id){
+    List<Event> listDependecy = [];
+
+    for (var event in events.value){
+      if (event.id == id){
+        listDependecy.add(event);
+      }
+    }
+
+    return listDependecy;
+  }
 }

@@ -18,7 +18,7 @@ void main() {
     });
 
     testWidgets('Seleciona dia 28 e verifica que a mesa redonda foi renderizada', (WidgetTester tester) async {
-      await tester.pumpWidget(const ChuvaDart());
+      await tester.pumpWidget(Calendar(currentDay: 29,));
 
       // Check that 'Palestra de 09:30 até 10:00' is not on the screen before tapping '28'.
       expect(find.text('Palestra de 09:30 até 10:00'), findsNothing);

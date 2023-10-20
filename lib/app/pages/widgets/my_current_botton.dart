@@ -46,13 +46,13 @@ class _MyCurrentBottonState extends State<MyCurrentBotton> {
         : Row(
             children: [
               getFavorited()
-                  ? const Icon(
+                  ? Icon(
                       Icons.star_outline,
-                      color: Colors.white,
+                      color: Colors.grey[300],
                     )
-                  : const Icon(
+                  : Icon(
                       Icons.star,
-                      color: Colors.white,
+                      color: Colors.grey[300],
                     ),
               const SizedBox(width: 5.0),
               Text(

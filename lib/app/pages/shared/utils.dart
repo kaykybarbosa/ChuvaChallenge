@@ -16,8 +16,19 @@ class Utils{
   }
 
   static String formatHour(DateTime? dateTime){
-    String hour = DateFormat('HH:mm').format(dateTime!);
-    return hour;
+    var year = dateTime?.year ?? 0;
+    var day = dateTime?.day ?? 0;
+    var month = dateTime?.month ?? 0;
+    var hour = dateTime?.hour ?? 0;
+    var minute = dateTime?.minute ?? 0;
+
+    hour = hour - 3;
+
+    dateTime = DateTime(year, month, day, hour, minute);
+    
+    String newHour = DateFormat('HH:mm').format(dateTime!);
+
+    return newHour;
   }
 
   static String formatDate(DateTime? dateTime){

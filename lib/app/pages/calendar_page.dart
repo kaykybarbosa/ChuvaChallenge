@@ -6,7 +6,9 @@ import 'package:chuva_dart/providers.dart';
 import 'package:flutter/material.dart';
 
 class Calendar extends StatefulWidget {
-  const Calendar({super.key});
+  Calendar({required this.currentDay, super.key});
+
+  int currentDay;
 
   @override
   State<Calendar> createState() => _CalendarState();
@@ -14,7 +16,6 @@ class Calendar extends StatefulWidget {
 
 class _CalendarState extends State<Calendar> {
   late EventController controller;
-  List<Event> events = [];
 
   @override
   void initState() {
@@ -22,37 +23,40 @@ class _CalendarState extends State<Calendar> {
     controller = getIt<EventController>();
   }
 
-  List<Event> getEventsByDay(day) {
-    List<Event> list = [];
-
-    day = int.parse(day);
+  setCurrentDay(day) {
     setState(() {
-      if (events.isNotEmpty) {
-        events.clear();
-      }
+      day = int.parse(day);
+      widget.currentDay = day;
     });
+  }
 
-    controller.events.value.forEach((event) {
-      if (event.start?.day == day) {
-        setState(() {
-          list.add(event);
-        });
+  List<int> idsTheParents = [];
+
+  List<Event> showWithDependency(){
+    List<Event> nonParentEvent = [];
+
+    for (var event in controller.events.value){
+      if (event.start?.day == widget.currentDay){
+        if (event.parent == null){
+          nonParentEvent.add(event);
+        } else {
+          idsTheParents.add(event.parent!);
+        }
       }
-    });
+    }
 
-    return list;
+    return nonParentEvent;
   }
 
   @override
   Widget build(BuildContext context) {
+    var events = showWithDependency();
+
     return Scaffold(
       appBar: myAppBar(),
       backgroundColor: const Color.fromARGB(255, 237, 236, 236),
       body: Column(
         children: [
-          MyCalendar(
-            onPressed: getEventsByDay,
-          ),
           Expanded(
             child: AnimatedBuilder(
                 animation:
@@ -61,11 +65,15 @@ class _CalendarState extends State<Calendar> {
                   if (controller.isLoading.value) {
                     return const Center(child: CircularProgressIndicator());
                   }
-
                   return ListView(
                     children: [
-                      for (var event in controller.events.value) 
-                        MyCard(event: event)
+                      MyCalendar(
+                        onPressed: setCurrentDay,
+                      ),
+                      for (var event in controller.events.value)
+                        if (event.start?.day == widget.currentDay)
+                          if (event.parent == null)
+                            MyCard(event: event)
                     ],
                   );
                 }),
@@ -75,7 +83,7 @@ class _CalendarState extends State<Calendar> {
     );
   }
 
-  myAppBar(){
+  myAppBar() {
     return AppBar(
       elevation: 3,
       shadowColor: Colors.white,
@@ -89,7 +97,7 @@ class _CalendarState extends State<Calendar> {
         ),
         icon: const Icon(Icons.arrow_back),
       ),
-      backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+      backgroundColor: Theme.of(context).colorScheme.primary,
       bottom: PreferredSize(
         preferredSize: const Size.fromHeight(100.0),
         child: Column(
@@ -97,11 +105,11 @@ class _CalendarState extends State<Calendar> {
           children: [
             const Text(
               'Chuva ❤️ Flutter',
-              style: TextStyle(fontSize: 20.0),
+              style: TextStyle(fontSize: 20.0, color: Colors.white),
             ),
             const Text(
               'Programação',
-              style: TextStyle(fontSize: 20.0),
+              style: TextStyle(fontSize: 20.0, color: Colors.white),
             ),
             Container(
               decoration: BoxDecoration(
@@ -117,7 +125,7 @@ class _CalendarState extends State<Calendar> {
                         horizontal: 12.0, vertical: 5.0),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(25.0),
-                      color: Theme.of(context).colorScheme.inversePrimary,
+                      color: Colors.blue[700],
                     ),
                     child: const Icon(
                       Icons.calendar_month_outlined,

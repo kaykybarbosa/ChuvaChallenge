@@ -1,4 +1,3 @@
-
 import 'package:chuva_dart/app/data/models/base/base_entity.dart';
 import 'package:chuva_dart/app/data/models/my_html.dart';
 import 'package:json_annotation/json_annotation.dart';

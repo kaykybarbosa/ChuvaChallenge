@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chuva_dart/app/data/models/event.dart';
 import 'package:chuva_dart/app/data/models/people.dart';
 import 'package:chuva_dart/app/pages/controller/event_controller.dart';
@@ -9,9 +10,9 @@ import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class ProfilePage extends StatefulWidget {
-  ProfilePage({required this.people, super.key});
+  const ProfilePage({required this.people, super.key});
 
-  People people;
+  final People people;
 
   @override
   State<ProfilePage> createState() => _ProfilePageState();
@@ -40,10 +41,10 @@ class _ProfilePageState extends State<ProfilePage> {
         elevation: 5,
         shadowColor: Colors.black,
         // leading: IconButton(
-        //     onPressed: () {
+        //   onPressed: () {
 
-        //     },
-        //     icon: const Icon(Icons.arrow_back)),
+        //   },
+        //   icon: const Icon(Icons.arrow_back)),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         centerTitle: true,
         title: const Text('Chuva ❤️ Flutter'),
@@ -61,7 +62,23 @@ class _ProfilePageState extends State<ProfilePage> {
                       ClipRRect(
                           borderRadius: BorderRadius.circular(50),
                           child: image.isNotEmpty
-                              ? Image.network(image, width: 100)
+                              ? Image(
+                                image: CachedNetworkImageProvider(
+                                  image, 
+                                  maxHeight: 165,
+                                  maxWidth: 165,
+                                ), 
+                                width: 100, 
+                                loadingBuilder: (context, child, progress) {
+                                  if (progress == null){
+                                    return child;
+                                  }
+
+                                  return Center(
+                                    child: CircularProgressIndicator(color: Colors.grey[300]),
+                                  );
+                                },
+                              )
                               : const Icon(
                                   FontAwesomeIcons.solidUser,
                                   size: 60,
