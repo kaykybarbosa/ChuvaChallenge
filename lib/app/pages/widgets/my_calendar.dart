@@ -10,7 +10,7 @@ class MyCalendar extends StatefulWidget {
 }
 
 class _MyCalendarState extends State<MyCalendar> {
-  final List<String> numbers = ['26', '27', '28', '29', '30'];
+  final List<String> days = ['26', '27', '28', '29', '30'];
 
   @override
   Widget build(BuildContext context) {
@@ -32,38 +32,34 @@ class _MyCalendarState extends State<MyCalendar> {
               maxLines: 2,
             ),
           ),
-          for (var number in numbers)
-            myBottonDate(number: number, onPressed: widget.onPressed)
+          for (var day in days)
+            SizedBox(
+              height: 50.0,
+              width: 50.0,
+              child: Ink(
+                decoration: BoxDecoration(
+                  color: Colors.grey[900],
+                  borderRadius: BorderRadius.circular(0),
+                ),
+                child: TextButton(
+                  onPressed: () {
+                    widget.onPressed(day);
+                  },
+                  style: TextButton.styleFrom(
+                    backgroundColor: Colors.blue[700],
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(0),
+                    ),
+                  ),
+                  child: Text(
+                    day,
+                    style: TextStyle(color: Colors.grey[400]),
+                  ),
+                ),
+              ),
+            ),
         ],
       ),
     );
   }
-
-Widget myBottonDate({number, onPressed}){
-  return SizedBox(
-      height: 50.0,
-      width: 50.0,
-      child: Ink(
-        decoration: BoxDecoration(
-          color: Colors.grey[900],
-          borderRadius: BorderRadius.circular(0),
-        ),
-        child: TextButton(
-          onPressed: () {
-            onPressed(number);
-          },
-          style: TextButton.styleFrom(
-            backgroundColor: Colors.blue[700],
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(0),
-            ),
-          ),
-          child: Text(
-            number,
-            style: TextStyle(color: Colors.grey[400]),
-          ),
-        ),
-      ),
-    );
-}
 }

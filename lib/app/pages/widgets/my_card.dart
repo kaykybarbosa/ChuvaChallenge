@@ -106,8 +106,7 @@ class _MyCardState extends State<MyCard> {
                             color: Colors.grey[600],
                           ),
                         );
-                      }).toList() ??
-                      [],
+                      }).toList() ?? [],
                 )
               ],
             ),

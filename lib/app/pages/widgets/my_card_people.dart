@@ -28,8 +28,8 @@ class _MyCardPeopleState extends State<MyCardPeople> {
           elevation: 0,
           backgroundColor: Colors.white,
           padding: const EdgeInsets.all(0),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(0))),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(0),),),
       child: Row(
         children: [
           ClipRRect(

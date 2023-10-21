@@ -7,7 +7,6 @@ import 'package:chuva_dart/app/pages/widgets/my_card.dart';
 import 'package:chuva_dart/providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({required this.people, super.key});
@@ -34,17 +33,14 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     var people = widget.people;
+    int indexSpace = people.name?.indexOf(' ') ?? -1;
     var image = widget.people.picture ?? '';
+    var nameIfNotImage = people.name?.replaceRange(1, (indexSpace + 1), '').replaceRange(2, null, '');
 
     return Scaffold(
       appBar: AppBar(
         elevation: 5,
         shadowColor: Colors.black,
-        // leading: IconButton(
-        //   onPressed: () {
-
-        //   },
-        //   icon: const Icon(Icons.arrow_back)),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         centerTitle: true,
         title: const Text('Chuva ❤️ Flutter'),
@@ -79,11 +75,12 @@ class _ProfilePageState extends State<ProfilePage> {
                                   );
                                 },
                               )
-                              : const Icon(
-                                  FontAwesomeIcons.solidUser,
-                                  size: 60,
-                                  color: Colors.grey,
-                                )),
+                              : CircleAvatar(
+                                backgroundColor: Colors.blue[700],
+                                radius: 40,
+                                child: Text(nameIfNotImage ?? '', style: const TextStyle(color: Colors.white, fontSize: 28.0),),
+                              )
+                            ),
                       Expanded(
                         child: Container(
                           margin: const EdgeInsets.symmetric(
@@ -112,7 +109,8 @@ class _ProfilePageState extends State<ProfilePage> {
                     ],
                   ),
                 ),
-                Container(
+                people.bio?.ptBr != null 
+                ? Container(
                   margin: const EdgeInsets.only(top: 10.0, left: 10.0),
                   child: const Row(
                     children: [
@@ -123,16 +121,17 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                     ],
                   ),
-                ),
+                )
+                : const Text(''),
                 Container(
                   margin:
                       const EdgeInsets.only(left: 10.0, top: 5.0, right: 10.0),
                   child: HtmlWidget(
                     '''
-                          <div style="text-align: justify;">
-                            ${people.bio?.ptBr ?? ''}
-                          </div>
-                        ''',
+                      <div style="text-align: justify;">
+                        ${people.bio?.ptBr ?? ''}
+                      </div>
+                    ''',
                     textStyle: const TextStyle(
                         fontSize: 15, fontWeight: FontWeight.w500),
                   ),

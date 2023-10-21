@@ -1,8 +1,8 @@
-import 'package:chuva_dart/app/data/models/event.dart';
+import 'package:chuva_dart/app/data/http/http_client.dart';
+import 'package:chuva_dart/app/data/repositories/event_repository.dart';
 import 'package:chuva_dart/app/pages/controller/event_controller.dart';
 import 'package:chuva_dart/app/pages/widgets/my_calendar.dart';
 import 'package:chuva_dart/app/pages/widgets/my_card.dart';
-import 'package:chuva_dart/providers.dart';
 import 'package:flutter/material.dart';
 
 class Calendar extends StatefulWidget {
@@ -20,7 +20,7 @@ class _CalendarState extends State<Calendar> {
   @override
   void initState() {
     super.initState();
-    controller = getIt<EventController>();
+    controller = EventController(eventRepository: EventRepository(client: HttpClient()));
   }
 
   setCurrentDay(day) {
@@ -30,28 +30,8 @@ class _CalendarState extends State<Calendar> {
     });
   }
 
-  List<int> idsTheParents = [];
-
-  List<Event> showWithDependency(){
-    List<Event> nonParentEvent = [];
-
-    for (var event in controller.events.value){
-      if (event.start?.day == widget.currentDay){
-        if (event.parent == null){
-          nonParentEvent.add(event);
-        } else {
-          idsTheParents.add(event.parent!);
-        }
-      }
-    }
-
-    return nonParentEvent;
-  }
-
   @override
   Widget build(BuildContext context) {
-    var events = showWithDependency();
-
     return Scaffold(
       appBar: myAppBar(),
       backgroundColor: const Color.fromARGB(255, 237, 236, 236),
@@ -63,17 +43,19 @@ class _CalendarState extends State<Calendar> {
                     Listenable.merge([controller.isLoading, controller.events]),
                 builder: (context, child) {
                   if (controller.isLoading.value) {
-                    return const Center(child: CircularProgressIndicator());
+                    return Center(child: CircularProgressIndicator(color: Colors.grey[400]));
                   }
                   return ListView(
                     children: [
                       MyCalendar(
                         onPressed: setCurrentDay,
                       ),
-                      for (var event in controller.events.value)
-                        if (event.start?.day == widget.currentDay)
-                          if (event.parent == null)
-                            MyCard(event: event)
+                      Column(
+                        children: controller.events.value
+                          .where((event) => event.start?.day == widget.currentDay && event.parent == null)
+                            .map((e) => MyCard(event: e))
+                              .toList(),
+                      ),
                     ],
                   );
                 }),

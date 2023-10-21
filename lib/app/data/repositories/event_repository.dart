@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:chuva_dart/app/data/http/http_client.dart';
 import 'package:chuva_dart/app/data/models/event.dart';
