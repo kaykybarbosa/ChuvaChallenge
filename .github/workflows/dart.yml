@@ -3,7 +3,6 @@ name: Dart
 on:
   push:
     paths:
-      - 'dart/**'
       - '.github/workflows/dart.yml'
 
 jobs:
@@ -12,12 +11,19 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - uses: dart-lang/setup-dart@9a04e6d73cca37bd455e0608d7e5092f881fd603
+
+      - name: Check Dart SDK
+        run: dart --version
+
+      - name: Set up Dart environment
+        uses: dart-lang/setup-dart@v2
+        with:
+          sdk: '3.1.3'  
 
       - name: Install dependencies
-        run: cd dart; flutter pub get
+        run: flutter pub get
 
-      - run: cd dart; flutter doctor
+      - run: flutter doctor
       
       - name: Analyze project source
         run: dart analyze
