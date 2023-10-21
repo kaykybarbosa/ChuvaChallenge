@@ -1,8 +1,7 @@
-import 'package:chuva_dart/app/data/http/http_client.dart';
-import 'package:chuva_dart/app/data/repositories/event_repository.dart';
 import 'package:chuva_dart/app/pages/controller/event_controller.dart';
 import 'package:chuva_dart/app/pages/widgets/my_calendar.dart';
 import 'package:chuva_dart/app/pages/widgets/my_card.dart';
+import 'package:chuva_dart/providers.dart';
 import 'package:flutter/material.dart';
 
 class Calendar extends StatefulWidget {
@@ -20,7 +19,7 @@ class _CalendarState extends State<Calendar> {
   @override
   void initState() {
     super.initState();
-    controller = EventController(eventRepository: EventRepository(client: HttpClient()));
+    controller = getIt<EventController>();
   }
 
   setCurrentDay(day) {
