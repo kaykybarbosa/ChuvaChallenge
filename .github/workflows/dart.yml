@@ -2,28 +2,31 @@ name: Dart
 
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    paths:
+      - 'dart/**'
+      - '.github/workflows/dart.yml'
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v2
       - uses: dart-lang/setup-dart@9a04e6d73cca37bd455e0608d7e5092f881fd603
 
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v3
-        with:
-          flutter-version: 2.0.1
-
       - name: Install dependencies
-        run: flutter pub get
+        run: cd dart; flutter pub get
 
+      - run: cd dart; flutter doctor
+      
       - name: Analyze project source
         run: dart analyze
 
       - name: Run tests
         run: dart test
+
+      - name: Archive screenshots
+        uses: actions/upload-artifact@v2
+        with:
+          name: screenshots
+          path: dart/screenshots/
