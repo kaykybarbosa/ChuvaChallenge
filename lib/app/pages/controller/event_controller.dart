@@ -21,61 +21,42 @@ class EventController{
   }
 
   Event getEventById(id){
-    final event = events.value
-        .firstWhere((event) => event.id == id);
-    
-    return event;
+    return events.value.firstWhere((event) => event.id == id);
   }
 
   People getPeopleById(id){
-    var people;
-    events.value.forEach((event) {
+    People? people;
+    for (var event in events.value) {
       event.people?.forEach((p) {
         if (p?.id == id){
           people = p;
           return;
         }
        });
-     });
-    
-    return people;
+     }
+
+    return people ?? People();
   }
 
   List<Event> getEventByPeopleId(peopleId){
     List<Event> peopleInEvent = [];
 
-    events.value.forEach((event) {
+    for (var event in events.value) {
       event.people?.forEach((people) {
         if (people?.id == peopleId){
           peopleInEvent.add(event);
         }
-       });
-     });
+      });
+    }
 
     return peopleInEvent;
   }
 
   List<Event> getEventParentById(id){
-    List<Event> listParent = [];
-
-    for (var event in events.value){
-      if (event.parent == id){
-        listParent.add(event);
-      }
-    }
-
-    return listParent;
+    return events.value.where((event) => event.parent == id).toList();
   }
 
   List<Event> getEventDependencyById(id){
-    List<Event> listDependecy = [];
-
-    for (var event in events.value){
-      if (event.id == id){
-        listDependecy.add(event);
-      }
-    }
-
-    return listDependecy;
+    return events.value.where((event) => event.id == id).toList();
   }
 }

@@ -38,26 +38,26 @@ class _CalendarState extends State<Calendar> {
         children: [
           Expanded(
             child: AnimatedBuilder(
-                animation:
-                    Listenable.merge([controller.isLoading, controller.events]),
-                builder: (context, child) {
-                  if (controller.isLoading.value) {
-                    return Center(child: CircularProgressIndicator(color: Colors.grey[400]));
-                  }
-                  return ListView(
-                    children: [
-                      MyCalendar(
-                        onPressed: setCurrentDay,
-                      ),
-                      Column(
-                        children: controller.events.value
-                          .where((event) => event.start?.day == widget.currentDay && event.parent == null)
-                            .map((e) => MyCard(event: e))
-                              .toList(),
-                      ),
-                    ],
-                  );
-                }),
+              animation:
+                  Listenable.merge([controller.isLoading, controller.events]),
+              builder: (context, child) {
+                if (controller.isLoading.value) {
+                  return Center(child: CircularProgressIndicator(color: Colors.grey[400]));
+                }
+                return ListView(
+                  children: [
+                    MyCalendar(
+                      onPressed: setCurrentDay,
+                    ),
+                    Column(
+                      children: controller.events.value
+                        .where((event) => event.start?.day == widget.currentDay && event.parent == null)
+                          .map((e) => MyCard(event: e))
+                            .toList(),
+                    ),
+                  ],
+                );
+              }),
           )
         ],
       ),

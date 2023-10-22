@@ -79,11 +79,11 @@ class _ActivityState extends State<Activity> {
           ),
           const SizedBox(height: 15.0),
           Column(
-              children: _listParents.map((e) {
-            return Column(
-              children: [MyCard(event: e)],
-            );
-          }).toList()),
+            children: _listParents.map((e) {
+              return Column(
+                children: [MyCard(event: e)],
+              );
+            }).toList()),
         ],
       ),
     );
